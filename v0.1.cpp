@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -15,16 +16,13 @@ struct studentas {
     string vardas, pavarde;
     float  nd[10]{};
     //Tarkime, kad namų darbų daugiausiai gali būti 10 - 
-    // toėl renkamės statinį masyvą ir nurodome masyvo dydį [10]
+    // todėl renkamės statinį masyvą ir nurodome masyvo dydį [10]
     float egz;
     float galutinis;
 };
 
 void pildymas(studentas& kint); // Funkcijos prototipas, kuris turi būti aprašytas pries funkciją main.
 void print(studentas& kin);
-
-
-
 
 
 int main()
@@ -41,9 +39,10 @@ int main()
         << left << setw(15) << "Vardas"
         << left << setw(20) << "Pavarde"
         << left << setw(25) << "Egzamino ivertinimas"
-        << left << setw(20) << "Galutinis balas"
+        <<< left << setw(20) << "Galutinis (vidurkis) / " 
+        << left << setw(20) << "Galutinis (mediana)"
         << endl
-        << string(15 + 20 + 2*20, '-') << "\n";
+        << string(15 + 20 + 3 * 25, '-') << "\n";
 
     for (int i = 0; i < studsk; i++)
         print(studentai[i]);
@@ -69,13 +68,15 @@ void pildymas(studentas& kint) {
 
     cout << "Iveskite pazymius: " << endl;
     for (int i = 0; i < n; i++) {
-        cin >> kint.nd[i];
+        while (!(cin >> kint.nd[i]) || kint.nd[i] < 1 || kint.nd[i] > 10)
+        {
+            cout << "Ivesta negalima reiksme - patikslinkite." << endl;
+            cout << "Iveskite pazymius: " << endl;
+            cin.clear();
+            cin.ignore();
+        }
         sum += kint.nd[i];
     };
-
-    cout << "Iveskite pazymius: " << endl;
-    while(!(cin>>kint.nd) || kint.nd <1 || kint.nd>10)
-
 
     vid = sum / n;
 
@@ -87,8 +88,20 @@ void pildymas(studentas& kint) {
         cin.clear();
         cin.ignore();
     }
+    
+    if (n % 2 == 0)
+    {
+        med= float(((kint.nd[(n / 2)- 1]) + (kint.nd[(n / 2)])) / 2.0);
+    }
+    else
+    {
+        med= kint.nd[(n) / 2];
+    }
+    cout << endl;
 
-    kint.galutinis = 0.4 * vid + 0.6 * kint.egz;
+
+    kint.galutinis_vid = 0.4 * vid + 0.6 * kint.egz;
+    kint.galutinis_med = 0.4 * med + 0.6 * kint.egz;
 }
 
 void print(studentas& kin) {
@@ -96,6 +109,6 @@ void print(studentas& kin) {
         << left        << setw(15)        << kin.vardas
         << left        << setw(20)        << kin.pavarde
         << left        << setw(25)        << kin.egz
-        << left        << setw(20)        << std::setprecision(3) << kin.galutinis
-        << endl;
+        << left << setw(20) << std::setprecision(3) << kin.galutinis_vid << " / "
+        << left << setw(20) << std::setprecision(3) << kin.galutinis_med << endl;
 }
