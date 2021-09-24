@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include <vector>
 #include <stdlib.h>
 #include <sstream>
@@ -25,48 +26,104 @@ struct Studentas {
     float galut = 0;
 };
 
+void pildymas(vector <Studentas>& duom);
+float vidurkis(vector <float> paz);
 float mediana(vector<float> paz);
+
+float galutinisPaz(Studentas stud);;
 void print(vector<studentas> Eil, int paz_sk);
-unsigned int countWordsInString(std::string const& str);
-void read_from_file(std::vector<studentas>& Eil, int* paz_sk);
 
 int main()
 {
-    int paz_sk;
-    char temp;
-    vector<studentas> Eil;
-    read_from_file(Eil &paz_sk);
-    print(Eil, paz_sk);
-    system("pause");
-    return 0;
-}
-
-void print(vector<studentas> Eil, int paz_sk) {
-    std::ofstream output;
-    output.open("kursiokai.txt");
-    output
-        << left << setw(15) << "Vardas"
-        << left << setw(20) << "Pavarde"
-        << left << setw(25) << "Egzamino rez."
-        << left << setw(20) << std::setprecision(3) << "Galutinis(vid.)/"
-        << left << "Galutinis(med.) " << endl
-        << string(15 + 20 + 3 * 25, '-') << "\n";
-
-    for (int i = 0; i < Eil.size; i++)
+    cout << "Iveskite studentu skaiciu: " << endl;
+    int n; ///studentu skaicius
+    cin >> n;
+    vector<Studentas> studentas;
+    Studentas tempas;
+    studentas.reserve(n);
+    pildymas(studentas);
+   /* for (int i = 0; i<n; i++)
+        pildymas(studentas);*/
+    if (studentas.size() > 0)
     {
-        output
-            << left << setw(15) << Eil[i].vardas
-            << left << setw(20) << Eil[i].pavarde
-            << left << setw(25) << Eil[i].egz
-            << left << setw(20) << std::setprecision(3) << Eil[i].galut
-            << mediana(Eil[i].paz) << endl;
+        for (int i = 0; i < studentas.size(); i++)
+        {
+            studentas.at(i).galutinis = galutinisPaz(studentas.at(i));
+        }
+        cout
+            << "\n"
+            << left << setw(15) << "Vardas"
+            << left << setw(20) << "Pavarde"
+            << left << setw(25) << "Egzamino ivertinimas"
+            << left << setw(20) << "Galutinis balas"
+            << endl
+            << string(15 + 20 + 2 * 20, '-') << "\n";
+        for(int i = 0; i < n; i++)
+            print(studentas[i]);
     }
 
-   }
+}
 
+void print(Studentas& kin)
+{
+    cout
+        << left << setw(15) << kin.vardas
+        << left << setw(20) << kin.pavarde
+        << left << setw(25) << kin.egz
+        << left << setw(20) << std::setprecision(3) << kin.galutinis
+        << endl;
+}
 
+void pildymas(vector <Studentas>& duom)
+{
+    Studentas studentas; // lokalus kintamasis
 
-float mediana(vector<float> paz) 
+    cout << "Iveskite studento varda ir pavarde: "; cin >> studentas.vardas >> studentas.pavarde;
+
+    int n; //Namų darbų skaičius
+    cout << "Kiek ivesite namu darbu? (1-10) ";
+    while (!(cin >> n) || n < 1 || n>10)
+    {
+        cout << "Ivesta negalima reiksme - patikslinkite." << endl;
+        cout << "Kiek ivesite namu darbu?" << endl;
+        cin.clear();
+        cin.ignore();
+    }
+
+    cout << "Iveskite pazymius: " << endl;
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+
+        while (!(cin >> studentas.paz[i]) || studentas.paz[i] < 1 || studentas.paz[i] > 10)
+        {
+            cout << "Ivesta negalima reiksme - patikslinkite." << endl;
+            cout << "Iveskite pazymius: " << endl;
+            cin.clear();
+            cin.ignore();
+        }
+
+        sum += studentas.paz[i];
+    };
+
+    cout << "Iveskite egzamino pazymi: ";
+    while (!(cin >> studentas.egz) || studentas.egz < 1 || studentas.egz>10)
+        {
+        cout << "Ivesta negalima reiksme - patikslinkite." << endl;
+        cout << "Iveskite egzamino pazymi: ";
+        cin.clear();
+        cin.ignore();
+    }
+}
+       
+float vidurkis(vector <float> paz)
+{
+    int sum = 0;
+    if (paz.size() < 1) { return 0; }
+    for (int i = 0; i < paz.size(); i++) {sum += paz[i];}
+    return sum / paz.size();
+}
+    
+float mediana(vector<float> paz)
 {
     typedef vector<float>::size_type vecSize;
     vecSize size = paz.size();
@@ -76,41 +133,30 @@ float mediana(vector<float> paz)
     vecSize vid = size / 2; // vidurinis vektoriaus elementas
     return size % 2 == 0 ? (paz[vid] + paz[vid - 1]) / 2 : paz[vid];
 }
+   
+float galutinisPaz(Studentas stud) {
+    float rez1, rez2;
 
-unsigned int countWordsInString(std::string const& str)
-{
-    std::stringstream stream(str);
-    return std::distance(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+    rez1 = vidurkis(stud.paz) * 0.4 + stud.egz * 0.6;
+    rez2 = mediana(stud.paz) * 0.4 + stud.egz * 0.6;
+
+    cout << rez1 << " / " << rez2;
 }
-
-void read_from_file(std::vector<studentas>& Eil, int* paz_sk)
-{
-    int student_counter = 0;
-    int temp;
-    std::ifstream fileRead;
-    string buff;
-    fileRead.open("kursiokai.txt");
-    if (fileRead.is_open())
-    {
-        getline(fileRead >> std::ws, buff);
-        *paz_sk = countWordsInString(buff) - 3;
-        while (true)
-        {
-
-            Eil.resize(Eil.size() + 1);
-            fileRead >> Eil.at(student_counter).vardas;
-            if (fileRead.eof()) { Eil.pop_back(); break; }
-            fileRead >> Eil.at(student_counter).pavarde;
-            for (int i = 0; i < *paz_sk; i++)
-            {
-                fileRead >> temp;
-                Eil.at(student_counter).paz.push_back(temp);
-            }
-            fileRead >> Eil.at(student_counter).egz;
-            Eil.at(student_counter).galut = Eil.at(student_counter).galut / *paz_sk;
-            Eil.at(student_counter).galut = Eil.at(student_counter).galut * 0.4 + 0.6 * Eil.at(student_counter).egz;
-            student_counter++;
-        }
-    }
-    else {cout << "-\n"; }
     
+int generate_random() //funkcija generuojanti atisitikitnius skaicius nuo 1 iki 10
+{
+    srand(time(NULL));
+    return rand() % 10 + 1;
+}
+    
+void autoIvedimas(studentas Eil[], int i, int n) //funckija automatiskai generuoja namu darbu pazymius ir egz. ivertinima
+{
+    Eil[i].egz = generate_random();
+    for (int x = 0; x < n; x++)
+    {
+        Eil[i].nd[x] = generate_random();
+    }
+    
+    Eil[i].galut = Eil[i].galut / n;
+    Eil[i].galut = Eil[i].galut * 0.4 + Eil[i].egz * 0.6;
+}
