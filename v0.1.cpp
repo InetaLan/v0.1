@@ -23,6 +23,9 @@ struct studentas {
 
 void pildymas(studentas& kint); // Funkcijos prototipas, kuris turi būti aprašytas pries funkciją main.
 void print(studentas& kin);
+void mediana(int pazymiai[]);
+int generate_random();
+void autoIvedimas(studentas Eil[], int i, int n);
 
 
 int main()
@@ -30,7 +33,33 @@ int main()
     studentas studentai[30];
     int studsk;
     cout << "Keliu studentu duomenis ivesite? "; cin >> studsk;
+    while (int(studsk) < 0 || int(studsk) > 200)
+    {
+        cout << "Ivesta negalima reiksme - patikslinkite." << endl;
+        cout << "Keliu studentu duomenis ivesite? " << endl;
+        cin.clear();
+        cin.ignore();
+    }
    
+    
+    /*std::cout << "Ar norite, kad studentu pazymiai butu suvesti automatiskai - SPAUSKITE \"T\"\n Jeigu norite suvesti duomenis patys - RASYKITE \"N\"\n";
+    std::cin >> temp;
+    while (temp != 'T' && temp != 't' && temp != 'N' && temp != 'n');
+    {
+        cout << "Ivesta negalima reiksme - pakartokite." << endl;
+        cin.clear();
+        cin.ignore();
+    }
+
+    for (int i = 0; i < studsk; i++)
+    {
+        if (temp == 'N' || temp == 'n') { pildymas(Eil, i); }
+        else
+        {
+            autoIvedimas(Eil, i, 10);
+        }
+    }*/
+    
     for (int i = 0; i < studsk; i++)
         pildymas(studentai[i]);
 
@@ -112,3 +141,44 @@ void print(studentas& kin) {
         << left << setw(20) << std::setprecision(3) << kin.galutinis_vid << " / "
         << left << setw(20) << std::setprecision(3) << kin.galutinis_med << endl;
 }
+
+/*void mediana(float pazymiai[]) //Funkcija, kuri suranda mediana
+{
+    int c = 0;
+    
+    for (int i = 0; i < 10; i++)
+    {
+        if (pazymiai[i] > 0) { c++; }
+        if (pazymiai[i] == -1) { pazymiai[i] = 0; break; }
+    }
+    if (c % 2 == 0)
+    {
+        cout << float(((pazymiai[c / 2-1]) + (pazymiai[(c / 2)])) / 2.0);
+    }
+    else
+    {
+        cout << pazymiai[(c/2)];
+    }
+    cout << endl;
+}*/
+
+
+
+/*int generate_random() //funkcija generuojanti atisitikitnius skaicius nuo 1 iki 10
+{
+    srand(time(NULL));
+    return rand() % 10 + 1;
+}
+
+void autoIvedimas(studentas Eil[], int i, int n) //funckija automatiskai generuoja namu darbu pazymius ir egz. ivertinima
+{
+    Eil[i].egz = generate_random();
+    for (int x = 0; x < n; x++)
+    {
+        Eil[i].nd[x] = generate_random();
+    }
+    
+    Eil[i].galut = Eil[i].galut / n;
+    Eil[i].galut = Eil[i].galut * 0.4 + Eil[i].egz * 0.6;
+
+}*/
