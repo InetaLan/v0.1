@@ -26,12 +26,15 @@ struct Studentas {
     float galut = 0;
 };
 
+
+void print(Studentas& kin);
 void pildymas(vector <Studentas>& duom);
 float vidurkis(vector <float> paz);
 float mediana(vector<float> paz);
+float galutinisPaz(Studentas stud);
+int generate_random();
+void autoIvedimas(studentas Eil[], int i, int n);
 
-float galutinisPaz(Studentas stud);;
-void print(vector<studentas> Eil, int paz_sk);
 
 int main()
 {
