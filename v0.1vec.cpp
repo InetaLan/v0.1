@@ -1,11 +1,12 @@
-﻿
-
 #include <iostream>
-#include <iomanip>
 #include <string>
 #include <vector>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <iterator>
+#include <iomanip>
 #include <algorithm>
-#include <numeric>
 
 using std::cout;
 using std::cin;
@@ -19,16 +20,14 @@ using std::vector;
 
 struct Studentas {
     string vardas, pavarde;
-    vector <float> paz;
-    float egz;
-    float galutinis;
+    vector <int> paz;
+    int egz;
+    float galut = 0;
 };
 
 void pildymas(vector <Studentas>& duom);
-float vidurkis(vector <float> paz);
 float mediana(vector<float> paz);
-void print(Studentas& kin);
-float galutinisPaz(Studentas stud);
+void print(vector<studentas> Eil, int paz_sk);
 
 int main()
 {
@@ -67,68 +66,30 @@ int main()
 
 }
 
-void pildymas(vector <Studentas>& duom)
-{
-    Studentas studentas; // lokalus kintamasis
+void print(vector<studentas> Eil, int paz_sk) {
+    std::ofstream output;
+    output.open("rezultatai.txt");
+    output
+        << left << setw(15) << "Vardas"
+        << left << setw(20) << "Pavarde"
+        << left << setw(25) << "Egzamino rez."
+        << left << setw(20) << std::setprecision(3) << "Galutinis(vid.)/"
+        << left << "Galutinis(med.) " << endl
+        << string(15 + 20 + 3 * 25, '-') << "\n";
 
-    cout << "Iveskite studento varda ir pavarde: "; cin >> studentas.vardas >> studentas.pavarde;
-
-    int n; //Namų darbų skaičius
-    cout << "Kiek ivesite namu darbu? (1-10) ";
-    while (!(cin >> n) || n < 1 || n>10)
+    for (int i = 0; i < Eil.size; i++)
     {
-        cout << "Ivesta negalima reiksme - patikslinkite." << endl;
-        cout << "Kiek ivesite namu darbu?" << endl;
-        cin.clear();
-        cin.ignore();
+        output
+            << left << setw(15) << Eil[i].vardas
+            << left << setw(20) << Eil[i].pavarde
+            << left << setw(25) << Eil[i].egz
+            << left << setw(20) << std::setprecision(3) << Eil[i].galut
+            << mediana(Eil[i].paz) << endl;
     }
 
-    cout << "Iveskite pazymius: " << endl;
-    int sum = 0;
-    for (int i = 0; i < n; i++) {
-
-        while (!(cin >> studentas.paz[i]) || studentas.paz[i] < 1 || studentas.paz[i] > 10)
-        {
-            cout << "Ivesta negalima reiksme - patikslinkite." << endl;
-            cout << "Iveskite pazymius: " << endl;
-            cin.clear();
-            cin.ignore();
-        }
-
-        sum += studentas.paz[i];
-    };
-
-    cout << "Iveskite egzamino pazymi: ";
-    while (!(cin >> studentas.egz) || studentas.egz < 1 || studentas.egz>10)
-    {
-        cout << "Ivesta negalima reiksme - patikslinkite." << endl;
-        cout << "Iveskite egzamino pazymi: ";
-        cin.clear();
-        cin.ignore();
-    }
-}
-
-void print(Studentas& kin)
-{
-    cout
-        << left << setw(15) << kin.vardas
-        << left << setw(20) << kin.pavarde
-        << left << setw(25) << kin.egz
-        << left << setw(20) << std::setprecision(3) << kin.galutinis
-        << endl;
-}
+   }
 
 
-float vidurkis(vector <float> paz)
-{
-    int sum = 0;
-    if (paz.size() < 1) { return 0; }
-
-    for (int i = 0; i < paz.size(); i++) {
-        sum += paz[i];
-    }
-    return sum / paz.size();
-}
 
 float mediana(vector<float> paz) 
 {
@@ -139,14 +100,4 @@ float mediana(vector<float> paz)
     sort(paz.begin(), paz.end()); // surūšiuojame vektorių į variacinę eilutę
     vecSize vid = size / 2; // vidurinis vektoriaus elementas
     return size % 2 == 0 ? (paz[vid] + paz[vid - 1]) / 2 : paz[vid];
-}
-
-
-float galutinisPaz(Studentas stud) {
-    float rez1, rez2;
-    
-    rez1 = vidurkis(stud.paz) * 0.4 + stud.egz * 0.6;
-    rez2 = mediana(stud.paz) * 0.4 + stud.egz * 0.6;
-
-    cout << rez1 << " / " << rez2;
 }
