@@ -11,6 +11,8 @@ Pirmo uždavinio **0.1** versija atlikta dviem būdais:
    
 2) Faile ***"v0.1vec.cpp"*** programa realizuota naudojant **std::vector**  tipo konteinerį.
 
+   Programa analogiška, tačiau vietoje masyvo viski duomenys laikomi vektoriuje.
+   Yra atsititktinio vertinimų generavimo funkcijos, tačiau jos nesusietos su main metodu ir neprieinamos vartotojui.
 
 
 
