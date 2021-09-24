@@ -25,50 +25,25 @@ struct Studentas {
     float galut = 0;
 };
 
-void pildymas(vector <Studentas>& duom);
 float mediana(vector<float> paz);
 void print(vector<studentas> Eil, int paz_sk);
+unsigned int countWordsInString(std::string const& str);
+void read_from_file(std::vector<studentas>& Eil, int* paz_sk);
 
 int main()
 {
-    cout << "Iveskite studentu skaiciu: " << endl;
-    int n; ///studentu skaicius
-    cin >> n;
-    vector<Studentas> studentas;
-    Studentas tempas;
-    studentas.reserve(n);
-
-    pildymas(studentas);
-
-   /* for (int i = 0; i<n; i++)
-        pildymas(studentas);*/
-
-    if (studentas.size() > 0)
-    {
-        for (int i = 0; i < studentas.size(); i++)
-        {
-            studentas.at(i).galutinis = galutinisPaz(studentas.at(i));
-        }
-
-        cout
-            << "\n"
-            << left << setw(15) << "Vardas"
-            << left << setw(20) << "Pavarde"
-            << left << setw(25) << "Egzamino ivertinimas"
-            << left << setw(20) << "Galutinis balas"
-            << endl
-            << string(15 + 20 + 2 * 20, '-') << "\n";
-
-        for(int i = 0; i < n; i++)
-            print(studentas[i]);
-    }
-
-
+    int paz_sk;
+    char temp;
+    vector<studentas> Eil;
+    read_from_file(Eil &paz_sk);
+    print(Eil, paz_sk);
+    system("pause");
+    return 0;
 }
 
 void print(vector<studentas> Eil, int paz_sk) {
     std::ofstream output;
-    output.open("rezultatai.txt");
+    output.open("kursiokai.txt");
     output
         << left << setw(15) << "Vardas"
         << left << setw(20) << "Pavarde"
@@ -101,3 +76,41 @@ float mediana(vector<float> paz)
     vecSize vid = size / 2; // vidurinis vektoriaus elementas
     return size % 2 == 0 ? (paz[vid] + paz[vid - 1]) / 2 : paz[vid];
 }
+
+unsigned int countWordsInString(std::string const& str)
+{
+    std::stringstream stream(str);
+    return std::distance(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+}
+
+void read_from_file(std::vector<studentas>& Eil, int* paz_sk)
+{
+    int student_counter = 0;
+    int temp;
+    std::ifstream fileRead;
+    string buff;
+    fileRead.open("kursiokai.txt");
+    if (fileRead.is_open())
+    {
+        getline(fileRead >> std::ws, buff);
+        *paz_sk = countWordsInString(buff) - 3;
+        while (true)
+        {
+
+            Eil.resize(Eil.size() + 1);
+            fileRead >> Eil.at(student_counter).vardas;
+            if (fileRead.eof()) { Eil.pop_back(); break; }
+            fileRead >> Eil.at(student_counter).pavarde;
+            for (int i = 0; i < *paz_sk; i++)
+            {
+                fileRead >> temp;
+                Eil.at(student_counter).paz.push_back(temp);
+            }
+            fileRead >> Eil.at(student_counter).egz;
+            Eil.at(student_counter).galut = Eil.at(student_counter).galut / *paz_sk;
+            Eil.at(student_counter).galut = Eil.at(student_counter).galut * 0.4 + 0.6 * Eil.at(student_counter).egz;
+            student_counter++;
+        }
+    }
+    else {cout << "-\n"; }
+    
